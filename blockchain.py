@@ -15,7 +15,9 @@ class Blockchain:
     def __init__(self):
         self.chain = []
         self.createBlock(nonce=1, previous_hash='0')
+        self.diffculty="0000"
     
+    # Block format is a dictonary
     def createBlock(self, nonce, previous_hash):
         block = {
             'blockNum': len(self.chain) + 1, 
@@ -26,14 +28,53 @@ class Blockchain:
         self.chain.append(block)
         return block
 
+    # Returns the last block in the chain
     def getPreviousBlock(self):
         return self.chain[-1]
 
+    # Solving the hash with the nonce
     def proofOfWork(self, previous_nonce):
-        nonce = 1
+        new_nonce = 1
         proof_of_work = False
+
         while proof_of_work is False:
-            # WIP --
-            # I have other HW to do rn
-            # I will handle this
-            # hash_operation = 
+            # We can define our own proof-of-work puzzle (n**2 - pn**2) in this case
+            hash_operation = hashlib.sha256(str(new_nonce ** 2 - previous_nonce ** 2).encode('utf-8')).hexdigest()
+
+            if hash_operation[:len(self.diffculty)] == self.diffculty:
+                proof_of_work = True
+            else:
+                new_nonce += 1
+        
+        return new_nonce
+
+    # Hash the contents of a block's dictionary
+    def hash(self, block):
+        encoded_block = json.dumps(block, sort_keys=True).encode('utf-8')
+        
+        return hashlib.sha256(encoded_block).hexdigest()
+    
+    # Check if chain has all valid blocks
+    def isChainValid(self, chain):
+        previous_block = chain[0]
+        block_index = 1
+
+        while block_index < len(chain):
+            block = chain[block_index]
+
+            if block['previousHash'] != self.hash(previous_block):
+                return False
+            
+            previous_nonce = previous_block['nonce']
+            nonce = block['nonce']
+
+            hash_operation = hashlib.sha256(str(nonce ** 2 - previous_nonce ** 2).encode('utf-8')).hexdigest()
+
+            if hash_operation[:len(self.diffculty)] != self.diffculty:
+                return False
+            
+            # Move forward in the chain if everything checks out
+            previous_block = block
+            block_index += 1
+        
+        return True
