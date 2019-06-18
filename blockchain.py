@@ -5,7 +5,6 @@
 from datetime import datetime
 import hashlib
 import json
-from flask import Flask, jsonify # Web API
 
 # Object Oriented blockchain
 # The container + chain where our blocks live
@@ -15,7 +14,7 @@ class Blockchain:
     def __init__(self):
         self.chain = []
         self.createBlock(nonce=1, previous_hash='0')
-        self.diffculty="0000"
+        self.diffculty = "0000"
     
     # Block format is a dictonary
     def createBlock(self, nonce, previous_hash):
@@ -78,3 +77,5 @@ class Blockchain:
             block_index += 1
         
         return True
+
+    
