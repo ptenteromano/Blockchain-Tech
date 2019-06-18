@@ -14,6 +14,11 @@ app = Flask(__name__)
 # These are our routes, You can check out the FLASK documentation:
 # http://flask.pocoo.org/docs/1.0/patterns/fileuploads/
 # -----------------------
+# A dummy root route
+@app.route('/', methods=['GET'])
+def root():
+    return jsonify({'root': "Please check out postman!"})
+
 # Route to mine block
 @app.route('/mine_block', methods=['GET'])
 def mine_block():
@@ -44,11 +49,15 @@ def mine_block():
 
 # Route to return the entire chain
 @app.route('/get_chain', methods=['GET'])
-def get_chain:
+def get_chain():
     response = {
         "chain": blockchain.chain,
         "length": len(blockchain.chain)
      }
 
-     return jsonify(response), 200
-    
+    return jsonify(response), 200
+
+# Run the app
+localHost = '0.0.0.0'
+port = 5000
+app.run(host=localHost, port=port)
