@@ -62,7 +62,7 @@ class Blockchain:
             block = chain[block_index]
 
             if block['previousHash'] != self.hash(previous_block):
-                return False
+                return False, block_index
             
             previous_nonce = previous_block['nonce']
             nonce = block['nonce']
@@ -70,12 +70,33 @@ class Blockchain:
             hash_operation = hashlib.sha256(str(nonce ** 2 - previous_nonce ** 2).encode('utf-8')).hexdigest()
 
             if hash_operation[:len(self.diffculty)] != self.diffculty:
-                return False
+                return False, block_index
             
             # Move forward in the chain if everything checks out
             previous_block = block
             block_index += 1
         
-        return True
+        return True, len(self.chain)
 
-    
+    # Function to append bogus blocks to chain
+    def simulateFakeBlocks(self):
+        for _ in range(2):
+            self.chain.append({
+                'blockNum': len(self.chain) + 1, 
+                'timestamp': "Never",
+                'nonce': -1,
+                'previousHash': 'FAKE BLOCK'
+            })
+
+    def pruneFakeBlocks(self):
+        is_valid, last_good_block = self.isChainValid(self.chain)
+
+        if not is_valid:
+            self.chain = self.chain[:last_good_block]
+            return True
+        return False
+            
+
+bc = Blockchain()
+
+print(bc.isChainValid(bc.chain))
