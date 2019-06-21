@@ -85,7 +85,7 @@ def fake_blocks():
 
 @app.route('/prune_fakes', methods=['GET'])
 def prune_fakes():
-    pruned = blockchain.pruneFakeBlocks()
+    pruned, last_valid_block = blockchain.pruneFakeBlocks()
 
     if pruned:
         msg = "Fake blocks found and pruned"
@@ -93,7 +93,8 @@ def prune_fakes():
         msg = "No fake blocks found"
     
     response = {
-        "message": msg
+        "message": msg,
+        "last_valid_block": last_valid_block
     }
 
     return jsonify(response), 200

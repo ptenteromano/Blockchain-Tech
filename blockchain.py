@@ -93,12 +93,12 @@ class Blockchain:
             })
 
     def pruneFakeBlocks(self):
-        is_valid, last_good_block = self.isChainValid(self.chain)
+        is_valid, last_valid_block = self.isChainValid(self.chain)
 
         if not is_valid:
-            self.chain = self.chain[:last_good_block]
-            return True
-        return False
+            self.chain = self.chain[:last_valid_block]
+            return True, last_valid_block
+        return False, last_valid_block
 
 
 # --- Testing Functions below ---
