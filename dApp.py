@@ -57,6 +57,54 @@ def get_chain():
 
     return jsonify(response), 200
 
+# Route to return the entire chain
+@app.route('/is_valid', methods=['GET'])
+def is_valid():
+    is_valid, last_good_block = blockchain.isChainValid(blockchain.chain)
+    if is_valid:
+        msg = "Valid Chain!"
+    else:
+        msg = "Incorrect, check the last valid block number!"
+
+    response = {
+        "message": msg,
+        "last_valid_block": last_good_block
+    }
+
+    return jsonify(response), 200
+
+# Simulate a fake blocks
+@app.route('/fake_blocks', methods=['GET'])
+def fake_blocks():
+    blockchain.simulateFakeBlocks()
+    response = {
+        "message": "Fake blocks generated"
+    }
+
+    return jsonify(response), 200
+
+@app.route('/prune_fakes', methods=['GET'])
+def prune_fakes():
+    pruned, last_valid_block = blockchain.pruneFakeBlocks()
+
+    if pruned:
+        msg = "Fake blocks found and pruned"
+    else:
+        msg = "No fake blocks found"
+    
+    response = {
+        "message": msg,
+        "last_valid_block": last_valid_block
+    }
+
+    return jsonify(response), 200
+
+
+
+
+
+
+# --------- No Other functions Below This Line -------- 
 # Run the app
 localHost = '0.0.0.0'
 port = 5000
