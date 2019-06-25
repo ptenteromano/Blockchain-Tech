@@ -15,25 +15,26 @@ app = Flask(__name__)
 # http://flask.pocoo.org/docs/1.0/patterns/fileuploads/
 # -----------------------
 # A dummy root route
-@app.route('/', methods=['GET'])
+@app.route("/", methods=["GET"])
 def root():
-    return jsonify({'root': "Please check out postman!"})
+    return jsonify({"root": "Please check out postman!"})
+
 
 # Route to mine block
-@app.route('/mine_block', methods=['GET'])
+@app.route("/mine_block", methods=["GET"])
 def mine_block():
     # Retrieve the previous block and nonce
     previous_block = blockchain.getPreviousBlock()
-    previous_nonce = previous_block['nonce']
+    previous_nonce = previous_block["nonce"]
 
     # Start the mining process
-    nonce = blockchain.proofOfWork(previous_nonce)
+    nonce, hash_solution = blockchain.proofOfWork(previous_nonce)
 
     # Hash the contents of the prior block
     previous_hash = blockchain.hash(previous_block)
 
     # Create the new block
-    block = blockchain.createBlock(nonce, previous_hash)
+    block = blockchain.createBlock(nonce, previous_hash, hash_solution)
 
     # Return a response in JSON to show the work
     response = {
@@ -41,24 +42,24 @@ def mine_block():
         "blockNum": block["blockNum"],
         "timestamp": block["timestamp"],
         "nonce": block["nonce"],
-        "previousHash": block["previousHash"]
+        "hashSolution": block["hashSolution"],
+        "previousHash": block["previousHash"],
     }
 
     # 200 is HTTP status: OK
     return jsonify(response), 200
 
+
 # Route to return the entire chain
-@app.route('/get_chain', methods=['GET'])
+@app.route("/get_chain", methods=["GET"])
 def get_chain():
-    response = {
-        "chain": blockchain.chain,
-        "length": len(blockchain.chain)
-     }
+    response = {"chain": blockchain.chain, "length": len(blockchain.chain)}
 
     return jsonify(response), 200
 
+
 # Route to return the entire chain
-@app.route('/is_valid', methods=['GET'])
+@app.route("/is_valid", methods=["GET"])
 def is_valid():
     is_valid, last_good_block = blockchain.isChainValid(blockchain.chain)
     if is_valid:
@@ -66,24 +67,21 @@ def is_valid():
     else:
         msg = "Incorrect, check the last valid block number!"
 
-    response = {
-        "message": msg,
-        "last_valid_block": last_good_block
-    }
+    response = {"message": msg, "last_valid_block": last_good_block}
 
     return jsonify(response), 200
+
 
 # Simulate a fake blocks
-@app.route('/fake_blocks', methods=['GET'])
+@app.route("/fake_blocks", methods=["GET"])
 def fake_blocks():
     blockchain.simulateFakeBlocks()
-    response = {
-        "message": "Fake blocks generated"
-    }
+    response = {"message": "Fake blocks generated"}
 
     return jsonify(response), 200
 
-@app.route('/prune_fakes', methods=['GET'])
+
+@app.route("/prune_fakes", methods=["GET"])
 def prune_fakes():
     pruned, last_valid_block = blockchain.pruneFakeBlocks()
 
@@ -91,21 +89,14 @@ def prune_fakes():
         msg = "Fake blocks found and pruned"
     else:
         msg = "No fake blocks found"
-    
-    response = {
-        "message": msg,
-        "last_valid_block": last_valid_block
-    }
+
+    response = {"message": msg, "last_valid_block": last_valid_block}
 
     return jsonify(response), 200
 
 
-
-
-
-
-# --------- No Other functions Below This Line -------- 
+# --------- No Other functions Below This Line --------
 # Run the app
-localHost = '0.0.0.0'
+localHost = "0.0.0.0"
 port = 5000
 app.run(host=localHost, port=port)

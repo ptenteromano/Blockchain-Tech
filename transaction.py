@@ -14,6 +14,7 @@ public_key = KDF.PBKDF2()
 
 private_key = ECC.import_key()
 
+# TODO: need to fix this class
 class transaction:
     def __init__(self):
         self.sender = ""
@@ -21,11 +22,11 @@ class transaction:
         self.private = True
         self.data = None
 
-    def verify(self):
+    def _encryptDocument(self):
         # Function to verify the transaction
         pass
 
-    def encrypt(self):
+    def _encryptPassword(self):
         # Function to encrypt the document into the transaction
         from Crypto.Cipher import AES
 

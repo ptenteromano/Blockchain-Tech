@@ -15,16 +15,23 @@ class Blockchain:
     # Initialize the chain and the genesis block
     def __init__(self):
         self.chain = []
-        self.createBlock(nonce=1, previous_hash='0')
+        self.createBlock(1, "0", None) # Genesis block
         self.diffculty = "0000"
+        self.users = {}
+
+    # This dict keeps track of all clients/miners using the chain
+    def addUser(self, userId, publickey, miner=False):
+        self.users[userId] = {"publicKey": publickey, "isMiner": miner}
 
     # Block format is a dictonary
-    def createBlock(self, nonce, previous_hash):
+    # Hash_solution is the puzzle that solved it
+    def createBlock(self, nonce, previous_hash, hash_solution):
         block = {
-            'blockNum': len(self.chain) + 1,
-            'timestamp': str(datetime.now()),
-            'nonce': nonce,
-            'previousHash': previous_hash
+            "blockNum": len(self.chain) + 1,
+            "timestamp": str(datetime.now()),
+            "nonce": nonce,
+            "hashSolution": hash_solution,
+            "previousHash": previous_hash
         }
         self.chain.append(block)
         return block
@@ -41,18 +48,19 @@ class Blockchain:
         while proof_of_work is False:
             # We can define our own proof-of-work puzzle (n**2 - pn**2) in this case
             hash_operation = hashlib.sha256(
-                str(new_nonce ** 2 - previous_nonce ** 2).encode('utf-8')).hexdigest()
+                str(new_nonce ** 2 - previous_nonce ** 2).encode("utf-8")
+            ).hexdigest()
 
-            if hash_operation[:len(self.diffculty)] == self.diffculty:
+            if hash_operation[: len(self.diffculty)] == self.diffculty:
                 proof_of_work = True
             else:
                 new_nonce += 1
 
-        return new_nonce
+        return new_nonce, hash_operation
 
     # Hash the contents of a block's dictionary
     def hash(self, block):
-        encoded_block = json.dumps(block, sort_keys=True).encode('utf-8')
+        encoded_block = json.dumps(block, sort_keys=True).encode("utf-8")
 
         return hashlib.sha256(encoded_block).hexdigest()
 
@@ -64,16 +72,17 @@ class Blockchain:
         while block_index < len(chain):
             block = chain[block_index]
 
-            if block['previousHash'] != self.hash(previous_block):
+            if block["previousHash"] != self.hash(previous_block):
                 return False, block_index
 
-            previous_nonce = previous_block['nonce']
-            nonce = block['nonce']
+            previous_nonce = previous_block["nonce"]
+            nonce = block["nonce"]
 
             hash_operation = hashlib.sha256(
-                str(nonce ** 2 - previous_nonce ** 2).encode('utf-8')).hexdigest()
+                str(nonce ** 2 - previous_nonce ** 2).encode("utf-8")
+            ).hexdigest()
 
-            if hash_operation[:len(self.diffculty)] != self.diffculty:
+            if hash_operation[: len(self.diffculty)] != self.diffculty:
                 return False, block_index
 
             # Move forward in the chain if everything checks out
@@ -85,12 +94,14 @@ class Blockchain:
     # Function to append bogus blocks to chain
     def simulateFakeBlocks(self):
         for _ in range(2):
-            self.chain.append({
-                'blockNum': len(self.chain) + 1,
-                'timestamp': "Never",
-                'nonce': -1,
-                'previousHash': 'FAKE BLOCK'
-            })
+            self.chain.append(
+                {
+                    "blockNum": len(self.chain) + 1,
+                    "timestamp": "Never",
+                    "nonce": -1,
+                    "previousHash": "FAKE BLOCK",
+                }
+            )
 
     def pruneFakeBlocks(self):
         is_valid, last_valid_block = self.isChainValid(self.chain)
