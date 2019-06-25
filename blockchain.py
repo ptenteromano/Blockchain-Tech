@@ -15,7 +15,7 @@ class Blockchain:
     # Initialize the chain and the genesis block
     def __init__(self):
         self.chain = []
-        self.createBlock(1, "0", None) # Genesis block
+        self.createBlock(1, "0", None)  # Genesis block
         self.diffculty = "0000"
         self.users = {}
 
@@ -31,7 +31,7 @@ class Blockchain:
             "timestamp": str(datetime.now()),
             "nonce": nonce,
             "hashSolution": hash_solution,
-            "previousHash": previous_hash
+            "previousHash": previous_hash,
         }
         self.chain.append(block)
         return block
@@ -48,7 +48,7 @@ class Blockchain:
         while proof_of_work is False:
             # We can define our own proof-of-work puzzle (n**2 - pn**2) in this case
             hash_operation = hashlib.sha256(
-                str(new_nonce ** 2 - previous_nonce ** 2).encode("utf-8")
+                str((new_nonce ** 2 - previous_nonce ** 2) + len(self.chain)).encode("utf-8")
             ).hexdigest()
 
             if hash_operation[: len(self.diffculty)] == self.diffculty:
@@ -58,7 +58,7 @@ class Blockchain:
 
         return new_nonce, hash_operation
 
-    # Hash the contents of a block's dictionary
+    # Hash the contents of the entire block
     def hash(self, block):
         encoded_block = json.dumps(block, sort_keys=True).encode("utf-8")
 
@@ -79,7 +79,7 @@ class Blockchain:
             nonce = block["nonce"]
 
             hash_operation = hashlib.sha256(
-                str(nonce ** 2 - previous_nonce ** 2).encode("utf-8")
+                str((nonce ** 2 - previous_nonce ** 2) + block_index).encode("utf-8")
             ).hexdigest()
 
             if hash_operation[: len(self.diffculty)] != self.diffculty:
