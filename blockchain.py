@@ -23,6 +23,13 @@ class Blockchain:
     def addUser(self, userId, publickey, miner=False):
         self.users[userId] = {"publicKey": publickey, "isMiner": miner}
 
+    # Either add or subtract a "0" from the difficulty
+    def changeDifficulty(self, increase=True):
+        if increase:
+            self.diffculty += "0"
+        else:
+            self.diffculty = self.diffculty[:-1]
+
     # Block format is a dictonary
     # Hash_solution is the puzzle that solved it
     def createBlock(self, nonce, previous_hash, hash_solution):
@@ -48,7 +55,9 @@ class Blockchain:
         while proof_of_work is False:
             # We can define our own proof-of-work puzzle (n**2 - pn**2) in this case
             hash_operation = hashlib.sha256(
-                str((new_nonce ** 2 - previous_nonce ** 2) + len(self.chain)).encode("utf-8")
+                str((new_nonce ** 2 - previous_nonce ** 2) + len(self.chain)).encode(
+                    "utf-8"
+                )
             ).hexdigest()
 
             if hash_operation[: len(self.diffculty)] == self.diffculty:
