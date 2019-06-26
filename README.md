@@ -42,3 +42,9 @@ How to entice the miners?
 
 ### Goals:
 
+### Resources:
+
+-Cryptography Python Package
+https://pycryptodome.readthedocs.io/en/latest/src/cipher/pkcs1_v1_5.html
+This contains, RSA Key creating, encryption and decryption
+
