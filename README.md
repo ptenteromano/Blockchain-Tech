@@ -9,6 +9,9 @@
 
 <strong>WIP</strong>
 
+### How to install
+1. Run `bash install.sh` to start
+
 ### TODO:
 Nonce + TIMESTAMP
 - Make nonce 32bit intenger (~4 bill max)
@@ -22,9 +25,10 @@ Finish Hybrid Encryption
     AES(document) + RSA_PUBLIC_Receiver(password) + RSA_PUBLIC_Sender(password) 
     + HASH(originalPDF) + ?HASH(originalPW)?
 
-- Receiver is able to use RSA private key to unlock the password
-- The password unlocks the AES Encryption
-- Sender also wants to public key lock the pw so they may retrieve the document
+Clean up directories
+Make bash aes and rsa Encrypt/Decrypt more general
+
+Generate RSA's for all new members and make wallets
 
 Get multiple servers up - connect them
 

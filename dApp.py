@@ -3,7 +3,7 @@
 
 # Imports
 from flask import Flask, jsonify  # Web API
-from blockchain import Blockchain
+from Blockchain import Blockchain
 
 # Init our blockchain
 blockchain = Blockchain()
@@ -17,7 +17,10 @@ app = Flask(__name__)
 # A dummy root route
 @app.route("/", methods=["GET"])
 def root():
-    return jsonify({"root": "Please check out postman!"})
+    return """<html><body>
+            <h1>Welcome to SECuChain!</h1>
+            <a href="/get_chain">Look at the Chain</a>
+            </body></html>"""
 
 
 # Route to mine block

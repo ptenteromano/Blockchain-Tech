@@ -3,7 +3,7 @@ import subprocess
 inputFile = "files/test.pdf"
 cipherFile = "test.pdf.enc"
 # plaintextPw = "ThisIsAReallyBigAndBad!!!%!@#$%^&*()_+PASSword"
-print("input please")
+print("Input a password please")
 plaintextPw = input()
 
 # Arguments List:
