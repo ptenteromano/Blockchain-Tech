@@ -22,8 +22,10 @@ class Blockchain:
     # Initialize the chain and the genesis block
     def __init__(self):
         self.chain = []
+        self.transactions = []
         self.createBlock(1, "0", None)  # Genesis block
         self.diffculty = "0000"
+        self.nodes = set()
         self.users = {}
 
     # This dict keeps track of all clients/miners using the chain
@@ -46,7 +48,11 @@ class Blockchain:
             "nonce": nonce,
             "hashSolution": hash_solution,
             "previousHash": previous_hash,
+            "transactions": self.transactions
         }
+        # Empty the transactions
+        self.transactions = []
+
         self.chain.append(block)
         return block
 
@@ -108,7 +114,19 @@ class Blockchain:
 
         return True, len(self.chain)
 
-    # Function to append bogus blocks to chain
+    def addTransaction(self, sender, receiver, data):
+        self.transactions.append({
+            "sender": sender,
+            "receiver": receiver,
+            "document": data
+        })
+
+        previous_block = self.getPreviousBlock()
+
+        # Returns the future next block number
+        return previous_block['blockNum'] + 1
+
+    # Functions to append bogus blocks to chain and remove
     def simulateFakeBlocks(self):
         for _ in range(2):
             self.chain.append(
