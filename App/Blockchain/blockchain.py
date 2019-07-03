@@ -5,10 +5,9 @@
 from datetime import datetime
 import hashlib
 import json
-from flask import Flask, jsonify
 
 # 2nd part
-from flask import request
+from flask import Flask, jsonify, request
 import requests
 from uuid import uuid4
 from urllib.parse import urlparse
@@ -114,6 +113,7 @@ class Blockchain:
 
         return True, len(self.chain)
 
+    # Creates a transaction and returns the future next block number
     def addTransaction(self, sender, receiver, data):
         self.transactions.append({
             "sender": sender,
@@ -123,10 +123,38 @@ class Blockchain:
 
         previous_block = self.getPreviousBlock()
 
-        # Returns the future next block number
         return previous_block['blockNum'] + 1
 
+    # Returns the address of a new node on the network
+    def addNode(self, addressOfNode):
+        parsed_url = urlparse(addressOfNode)
+        self.nodes.add(parsed_url.netloc)
+
+    # Find the best chain-by-consensus on network (longest chain)
+    def replaceChain(self):
+        network = self.nodes
+        longest_chain = None
+        max_length = len(self.chain)
+
+        for node in network:
+            response = requests.get(f"http://{node}/get_chain")
+
+            if response.status_code == 200:
+                length = response.json()["length"]
+                chain = response.json()["chain"]
+
+                if length > max_length and self.isChainValid(chain):
+                    max_length = length
+                    longest_chain = chain
+
+        if longest_chain:
+            self.chain = longest_chain
+            return True
+
+        return False
+
     # Functions to append bogus blocks to chain and remove
+
     def simulateFakeBlocks(self):
         for _ in range(2):
             self.chain.append(
