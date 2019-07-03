@@ -1,20 +1,15 @@
 # Implementatin of our blockchain
 # Phil, Cesar, Antonio
 
+# Object Oriented blockchain
+# The container + chain where our blocks live
+
 # Bring in some needed libraries
 from datetime import datetime
 import hashlib
 import json
-
-# 2nd part
-from flask import Flask, jsonify, request
-import requests
-from uuid import uuid4
 from urllib.parse import urlparse
-
-# Object Oriented blockchain
-# The container + chain where our blocks live
-
+import requests
 
 class Blockchain:
 
