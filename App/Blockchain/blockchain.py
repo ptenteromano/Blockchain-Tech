@@ -5,6 +5,13 @@
 from datetime import datetime
 import hashlib
 import json
+from flask import Flask, jsonify
+
+# 2nd part
+from flask import request
+import requests
+from uuid import uuid4
+from urllib.parse import urlparse
 
 # Object Oriented blockchain
 # The container + chain where our blocks live
@@ -88,7 +95,8 @@ class Blockchain:
             nonce = block["nonce"]
 
             hash_operation = hashlib.sha256(
-                str((nonce ** 2 - previous_nonce ** 2) + block_index).encode("utf-8")
+                str((nonce ** 2 - previous_nonce ** 2) +
+                    block_index).encode("utf-8")
             ).hexdigest()
 
             if hash_operation[: len(self.diffculty)] != self.diffculty:
