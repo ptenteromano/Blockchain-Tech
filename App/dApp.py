@@ -1,7 +1,8 @@
 # The web-application for our blockchain
 
+import os
 from Blockchain import Blockchain
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template, url_for
 from uuid import uuid4
 
 app = Flask(__name__)
@@ -18,10 +19,7 @@ node_address = str(uuid4()).replace('-', '')
 # The Home Route
 @app.route("/", methods=["GET"])
 def root():
-    return """<html><body>
-            <h1>Welcome to SECuChain!</h1>
-            <a href="/get_chain">Look at the Chain</a>
-            </body></html>"""
+    return render_template("homepage.html")
 
 
 # Route to mine block
@@ -101,6 +99,19 @@ def prune_fakes():
 
     return jsonify(response), 200
 
+
+# Browser cache busting
+@app.context_processor
+def override_url_for():
+    return dict(url_for=dated_url_for)
+
+def dated_url_for(endpoint, **values):
+    if endpoint == "static":
+        filename = values.get("filename", None)
+        if filename:
+            file_path = os.path.join(app.root_path, endpoint, filename)
+            values["q"] = int(os.stat(file_path).st_mtime)
+    return url_for(endpoint, **values)
 
 # --------- No Other functions Below This Line --------
 # Run the app
