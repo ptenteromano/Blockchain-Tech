@@ -4,13 +4,9 @@
   <h3>By Philip Tenteromano, Cesar Reynoso, Antonio Segalini</h3>
 </div>
 
-<div class="menu">
-  <a href="/get_chain">Look at the Chain</a>
-  <a href="/mine_block">Mine a block</a>
-  <a href="/is_valid">Check validity</a>
-</div>
-
 <hr />
-
-<div class="length">Current Length of Chain: {{ length }}</div>
+<div class="basic-info">
+  <p><b>Current Length of Chain:</b> {{ length }}</p>
+  <p><b>Current Difficulty:</b> {{ diff|length }} leading zeroes</p>
+</div>
 {% endblock %}

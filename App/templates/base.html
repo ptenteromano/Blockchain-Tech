@@ -13,6 +13,13 @@
     {% endblock %}
   </head>
   <body>
+    <div class="menu">
+      <a href="/">Home</a>
+      <a href="/get_chain">Chain</a>
+      <a href="/mine_block">Mine</a>
+      <a href="/is_valid">Status</a>
+    </div>
+    <h1>{{isvalid(chain)[0]}}</h1>
     {% block content %} {% endblock %}
   </body>
 </html>

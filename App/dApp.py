@@ -19,7 +19,12 @@ node_address = str(uuid4()).replace("-", "")
 # The Home Route
 @app.route("/", methods=["GET"])
 def root():
-    return render_template("homepage.html", length=blockchain.getLength()), 200
+    return (
+        render_template(
+            "homepage.html", length=blockchain.getLength(), diff=blockchain.diffculty
+        ),
+        200,
+    )
 
 
 # Route to mine block
@@ -53,11 +58,12 @@ def mine_block():
     # 200 is HTTP status: OK
     return jsonify(response), 200
 
+
 # Route to return the entire chain
 @app.route("/get_chain", methods=["GET"])
 def get_chain():
     # return jsonify(response), 200
-    return render_template("showchain.html", chain=blockchain.chain, )
+    return render_template("showchain.html", chain=blockchain.chain)
 
 
 # Route to return the entire chain
@@ -99,8 +105,10 @@ def prune_fakes():
 
 # Browser cache busting
 @app.context_processor
-def override_url_for():
-    return dict(url_for=dated_url_for)
+def get_context():
+    return dict(
+        url_for=dated_url_for, isvalid=blockchain.isChainValid, chain=blockchain.chain
+    )
 
 
 def dated_url_for(endpoint, **values):

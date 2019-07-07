@@ -10,10 +10,12 @@
   <div class="block">
     {% if block['blockNum'] == 1 %}
     <div class="gensis-block">
-      <h3>Genesis Block</h3>
+      <h1>Genesis Block</h1>
       <hr />
     </div>
     {% endif %}
+
+    <h3>MetaData:</h3>
     <div class="block-meta">
       <p><b>Block Number:</b> {{ block["blockNum"] }}</p>
 
@@ -26,6 +28,7 @@
       <p><b>Previous Hash:</b> {{ block["previousHash"] }}</p>
     </div>
 
+    <h3>Transactions:</h3>
     <div class="transactions">
       {% if block['transactions']|length == 0 %}
       <div class="no-trans">
@@ -38,5 +41,10 @@
       {% endfor %}
     </div>
   </div>
+  <div class="line"></div>
+  {% endfor %}
+  <div class="end">
+    <h4>End of Chain</h4>
+  </div>
 </div>
-{% endfor %} {% endblock %}
+{% endblock %}
