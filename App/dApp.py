@@ -1,6 +1,5 @@
 # The web-application for our blockchain
 
-# Imports
 from Blockchain import Blockchain
 from flask import Flask, jsonify, request
 from uuid import uuid4
