@@ -44,7 +44,6 @@ def mine_block():
     # Create the new block
     block = blockchain.createBlock(nonce, previous_hash, hash_solution)
 
-    # Return a response in JSON to show the work
     response = {
         "message": "Congrats, You mined a new Block!",
         "blockNum": block["blockNum"],
@@ -56,7 +55,8 @@ def mine_block():
     }
 
     # 200 is HTTP status: OK
-    return jsonify(response), 200
+    # return jsonify(response), 200
+    return render_template("mineblock.html", block=response)
 
 
 # Route to return the entire chain

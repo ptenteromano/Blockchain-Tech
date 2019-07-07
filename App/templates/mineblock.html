@@ -5,16 +5,12 @@
   href="{{ url_for('static', filename='styles/blocks.css') }}"
 />
 {% endblock %} {% block content %}
+<div class="message">
+  <h1>{{ block['message'] }}</h1>
+  <p>Newest Block Number: <b>{{ block["blockNum"] }}</b></p>
+</div>
 <div class="blockchain-container">
-  {% for block in chain %}
   <div class="block">
-    {% if block['blockNum'] == 1 %}
-    <div class="gensis-block">
-      <h1>Genesis Block</h1>
-      <hr />
-    </div>
-    {% endif %}
-
     <h3>MetaData:</h3>
     <div class="block-meta">
       <p><b>Block Number:</b> {{ block["blockNum"] }}</p>
@@ -41,10 +37,5 @@
       {% endfor %}
     </div>
   </div>
-  <div class="line"></div>
-  {% endfor %}
-  <div class="end">
-    <h4>End of Chain</h4>
-  </div>
 </div>
-{% endblock %}
+{% endblock %} 

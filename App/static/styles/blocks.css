@@ -7,6 +7,10 @@
   margin: 0 auto;
 }
 
+.message {
+  text-align: center;
+}
+
 .genesis-block > h3 {
   text-align: center;
 }

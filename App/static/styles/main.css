@@ -22,3 +22,25 @@
   margin-top: 20px;
   text-align: center;
 }
+
+.status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 5px auto;
+  text-align: center;
+}
+
+.status-good {
+  width: 130px;
+  background-color: #1df809;
+  border-radius: 20px;
+  padding: 10px 0;
+}
+
+.status-bad {
+  width: 150px;
+  background-color: #f80909;
+  border-radius: 20px;
+  padding: 10px 0;
+}

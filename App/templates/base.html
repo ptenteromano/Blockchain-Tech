@@ -17,9 +17,26 @@
       <a href="/">Home</a>
       <a href="/get_chain">Chain</a>
       <a href="/mine_block">Mine</a>
-      <a href="/is_valid">Status</a>
+      <a href="/fake_blocks">Fake Blocks</a>
     </div>
-    <h1>{{isvalid(chain)[0]}}</h1>
+
+    <div class="status">
+      {% if isvalid(chain)[0] %}
+      <div class="status-good">
+        Valid Chain
+      </div>
+      {% else %}
+      <div>
+        <div class="status-bad">
+          Invalid Chain!
+        </div>
+          <p>Last Valid Block: {{ isvalid(chain)[1] }}</p>
+          <a href="/prune_fakes">Prune Chain</a>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
     {% block content %} {% endblock %}
   </body>
 </html>
