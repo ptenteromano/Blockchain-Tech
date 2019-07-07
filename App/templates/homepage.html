@@ -1,24 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>SECuChain</title>
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='styles/main.css') }}"
-    />
-  </head>
+{% extends "base.html" %} 
 
-  <body>
-    <div class="center-box">
-      <h1>Welcome to SECuChain!</h1>
-      <h3>By Philip Tenteromano, Cesar Reynoso, Antonio Segalini</h3>
-    </div>
+{% block content %}
+<div class="center-box">
+  <h1>Welcome to SECuChain!</h1>
+  <h3>By Philip Tenteromano, Cesar Reynoso, Antonio Segalini</h3>
+</div>
 
-    <div class="menu">
-      <a href="/get_chain">Look at the Chain</a>
-    </div>
-  </body>
-</html>
+<div class="menu">
+  <a href="/get_chain">Look at the Chain</a>
+  <a href="/mine_block">Mine a block</a>
+  <a href="/is_valid">Check validity</a>
+</div>
+{% endblock %}
