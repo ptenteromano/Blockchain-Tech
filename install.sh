@@ -1,4 +1,18 @@
 # This file should do everything necessary to set up the app
+
+# Change file permissions
 chmod u+x ./install.sh
 chmod u+x ./App/Encryption/*
-pip3 install -r ./requirements.txt || pip install -r ./requirements.txt
+
+# Python Virtual environment
+pip3 install virtualenv
+
+if [ ! -d "venv" ]; then
+  virtualenv -p python3 venv
+fi
+
+# Activate the virtual environment
+source venv/bin/activate
+
+# Install the needed dependencies
+pip3 install -r ./requirements.txt
