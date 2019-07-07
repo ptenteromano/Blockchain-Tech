@@ -10,7 +10,7 @@ app = Flask(__name__)
 # Init our blockchain
 blockchain = Blockchain()
 
-node_address = str(uuid4()).replace('-', '')
+node_address = str(uuid4()).replace("-", "")
 
 # Start our web-app
 # These are our routes, You can check out the FLASK documentation:
@@ -19,7 +19,7 @@ node_address = str(uuid4()).replace('-', '')
 # The Home Route
 @app.route("/", methods=["GET"])
 def root():
-    return render_template("homepage.html")
+    return render_template("homepage.html", length=blockchain.getLength()), 200
 
 
 # Route to mine block
@@ -34,8 +34,7 @@ def mine_block():
 
     # Hash the contents of the prior block
     previous_hash = blockchain.hash(previous_block)
-    blockchain.addTransaction(
-        sender=node_address, receiver='Phil', data='Dummy.pdf')
+    blockchain.addTransaction(sender=node_address, receiver="Phil", data="Dummy.pdf")
 
     # Create the new block
     block = blockchain.createBlock(nonce, previous_hash, hash_solution)
@@ -48,19 +47,17 @@ def mine_block():
         "nonce": block["nonce"],
         "hashSolution": block["hashSolution"],
         "previousHash": block["previousHash"],
-        "transactions": block["transactions"]
+        "transactions": block["transactions"],
     }
 
     # 200 is HTTP status: OK
     return jsonify(response), 200
 
-
 # Route to return the entire chain
 @app.route("/get_chain", methods=["GET"])
 def get_chain():
-    response = {"chain": blockchain.chain, "length": len(blockchain.chain)}
-
-    return jsonify(response), 200
+    # return jsonify(response), 200
+    return render_template("showchain.html", chain=blockchain.chain, )
 
 
 # Route to return the entire chain
@@ -105,6 +102,7 @@ def prune_fakes():
 def override_url_for():
     return dict(url_for=dated_url_for)
 
+
 def dated_url_for(endpoint, **values):
     if endpoint == "static":
         filename = values.get("filename", None)
@@ -112,6 +110,7 @@ def dated_url_for(endpoint, **values):
             file_path = os.path.join(app.root_path, endpoint, filename)
             values["q"] = int(os.stat(file_path).st_mtime)
     return url_for(endpoint, **values)
+
 
 # --------- No Other functions Below This Line --------
 # Run the app

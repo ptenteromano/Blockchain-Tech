@@ -33,12 +33,15 @@ class Blockchain:
         else:
             self.diffculty = self.diffculty[:-1]
 
+    def getLength(self):
+        return len(self.chain)
+
     # Block format is a dictonary
     # Hash_solution is the puzzle that solved it
     def createBlock(self, nonce, previous_hash, hash_solution):
         block = {
             "blockNum": len(self.chain) + 1,
-            "timestamp": str(datetime.now()),
+            "timestamp": str(datetime.now().replace(microsecond=0)),
             "nonce": nonce,
             "hashSolution": hash_solution,
             "previousHash": previous_hash,

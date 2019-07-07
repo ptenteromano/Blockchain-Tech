@@ -1,6 +1,4 @@
-{% extends "base.html" %} 
-
-{% block content %}
+{% extends "base.html" %} {% block content %}
 <div class="center-box">
   <h1>Welcome to SECuChain!</h1>
   <h3>By Philip Tenteromano, Cesar Reynoso, Antonio Segalini</h3>
@@ -11,4 +9,8 @@
   <a href="/mine_block">Mine a block</a>
   <a href="/is_valid">Check validity</a>
 </div>
+
+<hr />
+
+<div class="length">Current Length of Chain: {{ length }}</div>
 {% endblock %}

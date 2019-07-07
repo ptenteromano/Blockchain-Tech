@@ -1,0 +1,42 @@
+{% extends "base.html" %} {% block styles %}
+{{ super() }}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='styles/blocks.css') }}"
+/>
+{% endblock %} {% block content %}
+<div class="blockchain-container">
+  {% for block in chain %}
+  <div class="block">
+    {% if block['blockNum'] == 1 %}
+    <div class="gensis-block">
+      <h3>Genesis Block</h3>
+      <hr />
+    </div>
+    {% endif %}
+    <div class="block-meta">
+      <p><b>Block Number:</b> {{ block["blockNum"] }}</p>
+
+      <p><b>Time stamp:</b> {{ block["timestamp"] }}</p>
+
+      <p><b>Nonce:</b> {{ block["Nonce"] }}</p>
+
+      <p><b>Solution:</b> {{ block["hashSolution"] }}</p>
+
+      <p><b>Previous Hash:</b> {{ block["previousHash"] }}</p>
+    </div>
+
+    <div class="transactions">
+      {% if block['transactions']|length == 0 %}
+      <div class="no-trans">
+        <b>No Transactions in Block</b>
+      </div>
+      {% endif %} {% for trans in block['transactions'] %}
+      <div>
+        {{ trans }}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endfor %} {% endblock %}
