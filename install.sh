@@ -2,6 +2,7 @@
 
 # Change file permissions
 chmod u+x ./install.sh
+chmod u+x ./server.sh
 chmod u+x ./App/Encryption/*
 
 # Python Virtual environment

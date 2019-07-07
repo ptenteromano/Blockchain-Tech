@@ -1,22 +1,25 @@
 # Implementatin of our blockchain
 # Phil, Cesar, Antonio
 
+# Object Oriented blockchain
+# The container + chain where our blocks live
+
 # Bring in some needed libraries
 from datetime import datetime
 import hashlib
 import json
-
-# Object Oriented blockchain
-# The container + chain where our blocks live
-
+from urllib.parse import urlparse
+import requests
 
 class Blockchain:
 
     # Initialize the chain and the genesis block
     def __init__(self):
         self.chain = []
+        self.transactions = []
         self.createBlock(1, "0", None)  # Genesis block
         self.diffculty = "0000"
+        self.nodes = set()
         self.users = {}
 
     # This dict keeps track of all clients/miners using the chain
@@ -39,7 +42,11 @@ class Blockchain:
             "nonce": nonce,
             "hashSolution": hash_solution,
             "previousHash": previous_hash,
+            "transactions": self.transactions
         }
+        # Empty the transactions
+        self.transactions = []
+
         self.chain.append(block)
         return block
 
@@ -88,7 +95,8 @@ class Blockchain:
             nonce = block["nonce"]
 
             hash_operation = hashlib.sha256(
-                str((nonce ** 2 - previous_nonce ** 2) + block_index).encode("utf-8")
+                str((nonce ** 2 - previous_nonce ** 2) +
+                    block_index).encode("utf-8")
             ).hexdigest()
 
             if hash_operation[: len(self.diffculty)] != self.diffculty:
@@ -100,7 +108,48 @@ class Blockchain:
 
         return True, len(self.chain)
 
-    # Function to append bogus blocks to chain
+    # Creates a transaction and returns the future next block number
+    def addTransaction(self, sender, receiver, data):
+        self.transactions.append({
+            "sender": sender,
+            "receiver": receiver,
+            "document": data
+        })
+
+        previous_block = self.getPreviousBlock()
+
+        return previous_block['blockNum'] + 1
+
+    # Returns the address of a new node on the network
+    def addNode(self, addressOfNode):
+        parsed_url = urlparse(addressOfNode)
+        self.nodes.add(parsed_url.netloc)
+
+    # Find the best chain-by-consensus on network (longest chain)
+    def replaceChain(self):
+        network = self.nodes
+        longest_chain = None
+        max_length = len(self.chain)
+
+        for node in network:
+            response = requests.get(f"http://{node}/get_chain")
+
+            if response.status_code == 200:
+                length = response.json()["length"]
+                chain = response.json()["chain"]
+
+                if length > max_length and self.isChainValid(chain):
+                    max_length = length
+                    longest_chain = chain
+
+        if longest_chain:
+            self.chain = longest_chain
+            return True
+
+        return False
+
+    # Functions to append bogus blocks to chain and remove
+
     def simulateFakeBlocks(self):
         for _ in range(2):
             self.chain.append(

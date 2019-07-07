@@ -1,19 +1,22 @@
 # The web-application for our blockchain
 
 import os
-from flask import Flask, jsonify, request, render_template, url_for
 from Blockchain import Blockchain
+from flask import Flask, jsonify, request, render_template, url_for
+from uuid import uuid4
+
+app = Flask(__name__)
 
 # Init our blockchain
 blockchain = Blockchain()
 
-# Start our web-app
-app = Flask(__name__)
+node_address = str(uuid4()).replace('-', '')
 
+# Start our web-app
 # These are our routes, You can check out the FLASK documentation:
 # http://flask.pocoo.org/docs/1.0/patterns/fileuploads/
 # -----------------------
-# A dummy root route
+# The Home Route
 @app.route("/", methods=["GET"])
 def root():
     return render_template("homepage.html")
@@ -31,6 +34,8 @@ def mine_block():
 
     # Hash the contents of the prior block
     previous_hash = blockchain.hash(previous_block)
+    blockchain.addTransaction(
+        sender=node_address, receiver='Phil', data='Dummy.pdf')
 
     # Create the new block
     block = blockchain.createBlock(nonce, previous_hash, hash_solution)
@@ -43,6 +48,7 @@ def mine_block():
         "nonce": block["nonce"],
         "hashSolution": block["hashSolution"],
         "previousHash": block["previousHash"],
+        "transactions": block["transactions"]
     }
 
     # 200 is HTTP status: OK
