@@ -2,7 +2,7 @@
 
 import os
 from Blockchain import Blockchain
-from flask import Flask, jsonify, request, render_template, url_for
+from flask import Flask, jsonify, request, render_template, url_for, redirect
 from uuid import uuid4
 
 app = Flask(__name__)
@@ -21,7 +21,7 @@ node_address = str(uuid4()).replace("-", "")
 def root():
     return (
         render_template(
-            "homepage.html", length=blockchain.getLength(), diff=blockchain.diffculty
+            "homepage.html", length=blockchain.getLength(), diff=blockchain.difficulty
         ),
         200,
     )
@@ -35,7 +35,7 @@ def mine_block():
     previous_nonce = previous_block["nonce"]
 
     # Start the mining process
-    nonce, hash_solution = blockchain.proofOfWork(previous_nonce)
+    nonce, hash_solution, time = blockchain.proofOfWork(previous_nonce)
 
     # Hash the contents of the prior block
     previous_hash = blockchain.hash(previous_block)
@@ -44,29 +44,18 @@ def mine_block():
     # Create the new block
     block = blockchain.createBlock(nonce, previous_hash, hash_solution)
 
-    response = {
-        "message": "Congrats, You mined a new Block!",
-        "blockNum": block["blockNum"],
-        "timestamp": block["timestamp"],
-        "nonce": block["nonce"],
-        "hashSolution": block["hashSolution"],
-        "previousHash": block["previousHash"],
-        "transactions": block["transactions"],
-    }
+    block["message"] = "Congrats, you mined a new Block!"
 
-    # 200 is HTTP status: OK
-    # return jsonify(response), 200
-    return render_template("mineblock.html", block=response)
+    return render_template("mineblock.html", block=block, time=time), 200
 
 
 # Route to return the entire chain
 @app.route("/get_chain", methods=["GET"])
 def get_chain():
-    # return jsonify(response), 200
-    return render_template("showchain.html", chain=blockchain.chain)
+    return render_template("showchain.html")
 
 
-# Route to return the entire chain
+# Route to return if chain is valid or not
 @app.route("/is_valid", methods=["GET"])
 def is_valid():
     is_valid, last_good_block = blockchain.isChainValid(blockchain.chain)
@@ -84,26 +73,32 @@ def is_valid():
 @app.route("/fake_blocks", methods=["GET"])
 def fake_blocks():
     blockchain.simulateFakeBlocks()
-    response = {"message": "Fake blocks generated"}
-
-    return jsonify(response), 200
+    return render_template("fakeblocks.html"), 200
 
 
 @app.route("/prune_fakes", methods=["GET"])
 def prune_fakes():
+    before_prune = blockchain.getLength()
     pruned, last_valid_block = blockchain.pruneFakeBlocks()
 
-    if pruned:
-        msg = "Fake blocks found and pruned"
-    else:
-        msg = "No fake blocks found"
+    removed = before_prune - last_valid_block
 
-    response = {"message": msg, "last_valid_block": last_valid_block}
-
-    return jsonify(response), 200
+    return render_template("prunefakes.html", pruned=pruned, removed=removed), 200
 
 
-# Browser cache busting
+@app.route("/increase_diff", methods=["POST"])
+def increase_diff():
+    blockchain.changeDifficulty(increase=True)
+    return redirect("/")
+
+
+@app.route("/decrease_diff", methods=["POST"])
+def decrease_diff():
+    blockchain.changeDifficulty(increase=False)
+    return redirect("/")
+
+
+# Context for entire app
 @app.context_processor
 def get_context():
     return dict(

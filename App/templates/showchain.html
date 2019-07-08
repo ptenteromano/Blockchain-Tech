@@ -9,7 +9,7 @@
   {% for block in chain %}
   <div class="block">
     {% if block['blockNum'] == 1 %}
-    <div class="gensis-block">
+    <div class="genesis-block">
       <h1>Genesis Block</h1>
       <hr />
     </div>
@@ -35,8 +35,10 @@
         <b>No Transactions in Block</b>
       </div>
       {% endif %} {% for trans in block['transactions'] %}
-      <div>
-        {{ trans }}
+      <div class="one-trans">
+        <p><b>Sender:</b> {{ trans["sender"] }}</p>
+        <p><b>Receiver:</b> {{ trans["receiver"] }}</p>
+        <p><b>Document:</b> {{ trans["document"] }}</p>
       </div>
       {% endfor %}
     </div>

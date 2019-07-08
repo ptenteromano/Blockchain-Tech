@@ -1,0 +1,16 @@
+{% extends "base.html" %} {% block styles %}
+{{ super() }}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='styles/blocks.css') }}"
+/>
+{% endblock %} {% block content %}
+<div class="message">
+  {% if pruned %}
+    <h1>{{removed}} Blocks pruned!</h1>
+  {% else %}
+    <h1>No fakes found - chain is already clean!</h1>
+  {% endif %}
+  <a href="/get_chain">See the chain here</a>
+  </div>
+{% endblock %}

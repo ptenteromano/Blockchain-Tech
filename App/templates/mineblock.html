@@ -8,9 +8,10 @@
 <div class="message">
   <h1>{{ block['message'] }}</h1>
   <p>Newest Block Number: <b>{{ block["blockNum"] }}</b></p>
+  <p>Time to mine: {{ time }} seconds</p>
 </div>
 <div class="blockchain-container">
-  <div class="block">
+  <div class="block mined-block">
     <h3>MetaData:</h3>
     <div class="block-meta">
       <p><b>Block Number:</b> {{ block["blockNum"] }}</p>
@@ -31,8 +32,10 @@
         <b>No Transactions in Block</b>
       </div>
       {% endif %} {% for trans in block['transactions'] %}
-      <div>
-        {{ trans }}
+      <div class="one-trans">
+        <p><b>Sender:</b> {{ trans["sender"] }} </p>
+        <p><b>Receiver:</b> {{ trans["receiver"] }} </p>
+        <p><b>Document:</b> {{ trans["document"] }} </p>
       </div>
       {% endfor %}
     </div>

@@ -12,6 +12,7 @@
     />
     {% endblock %}
   </head>
+
   <body>
     <div class="menu">
       <a href="/">Home</a>
@@ -38,5 +39,27 @@
     </div>
 
     {% block content %} {% endblock %}
+
+    {% block footer %}
+    <hr class="body-break" />
+    <div class="footer">
+      <div class="difficulty">
+        <form action="/increase_diff" method="post">
+          <button class="inc-diff" name="increase_diff" type="submit">Increase Difficulty</button>
+        </form>
+        <form action="/decrease_diff" method="post">
+          <button class="dec-diff" name="decrease_diff" type="submit">Decrease Difficulty</button>
+        </form>
+      </div>
+      <p>Checkout the code on 
+        <a href="https://github.com/ptenteromano/Blockchain-Tech"
+        rel="noopener noreferrer" 
+        target="_blank">
+          Github
+        </a>
+      </p>
+      <em><b>Copyright 2019: </b>Philip Tenteromano, Cesar Reynoso, Antonio Segalini</em>
+    </div>
+    {% endblock %}
   </body>
 </html>

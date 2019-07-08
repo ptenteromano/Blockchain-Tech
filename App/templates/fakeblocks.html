@@ -1,0 +1,13 @@
+{% extends "base.html" %} {% block styles %}
+{{ super() }}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='styles/blocks.css') }}"
+/>
+{% endblock %} {% block content %}
+<div class="message">
+  <h1>Two Fake blocks have been generated!</h1>
+  <h4>Length of "chain": {{ chain|length }}</h4>
+  <a href="/get_chain">See them here</a>
+</div>
+{% endblock %} 

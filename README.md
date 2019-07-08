@@ -12,6 +12,12 @@
 ### How to install
 1. Run `bash install.sh` to start
 
+### Updated to do
+- Owner to block miner
+- wallets
+- transactions
+
+
 ### TODO:
 Nonce + TIMESTAMP
 - Make nonce 32bit intenger (~4 bill max)

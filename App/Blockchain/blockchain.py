@@ -10,6 +10,8 @@ import hashlib
 import json
 from urllib.parse import urlparse
 import requests
+from timeit import default_timer as timer
+
 
 class Blockchain:
 
@@ -17,8 +19,9 @@ class Blockchain:
     def __init__(self):
         self.chain = []
         self.transactions = []
+        self.difficulty = "0000"
+        self.difficultyArray = []
         self.createBlock(1, "0", None)  # Genesis block
-        self.diffculty = "0000"
         self.nodes = set()
         self.users = {}
 
@@ -29,9 +32,9 @@ class Blockchain:
     # Either add or subtract a "0" from the difficulty
     def changeDifficulty(self, increase=True):
         if increase:
-            self.diffculty += "0"
+            self.difficulty += "0"
         else:
-            self.diffculty = self.diffculty[:-1]
+            self.difficulty = self.difficulty[:-1]
 
     def getLength(self):
         return len(self.chain)
@@ -45,12 +48,14 @@ class Blockchain:
             "nonce": nonce,
             "hashSolution": hash_solution,
             "previousHash": previous_hash,
-            "transactions": self.transactions
+            "transactions": self.transactions,
         }
+
         # Empty the transactions
         self.transactions = []
-
         self.chain.append(block)
+        self.difficultyArray.append(self.difficulty)
+        
         return block
 
     # Returns the last block in the chain
@@ -62,20 +67,22 @@ class Blockchain:
         new_nonce = 1
         proof_of_work = False
 
+        start = timer()
         while proof_of_work is False:
             # We can define our own proof-of-work puzzle (n**2 - pn**2) in this case
-            hash_operation = hashlib.sha256(
+            hash_solution = hashlib.sha256(
                 str((new_nonce ** 2 - previous_nonce ** 2) + len(self.chain)).encode(
                     "utf-8"
                 )
             ).hexdigest()
 
-            if hash_operation[: len(self.diffculty)] == self.diffculty:
+            if hash_solution[: len(self.difficulty)] == self.difficulty:
                 proof_of_work = True
             else:
                 new_nonce += 1
+        end = timer()
 
-        return new_nonce, hash_operation
+        return new_nonce, hash_solution, round(end - start, 6)
 
     # Hash the contents of the entire block
     def hash(self, block):
@@ -92,17 +99,21 @@ class Blockchain:
             block = chain[block_index]
 
             if block["previousHash"] != self.hash(previous_block):
+                print("No!")
                 return False, block_index
 
             previous_nonce = previous_block["nonce"]
             nonce = block["nonce"]
 
             hash_operation = hashlib.sha256(
-                str((nonce ** 2 - previous_nonce ** 2) +
-                    block_index).encode("utf-8")
+                str((nonce ** 2 - previous_nonce ** 2) + block_index).encode("utf-8")
             ).hexdigest()
 
-            if hash_operation[: len(self.diffculty)] != self.diffculty:
+            difficultyAtBlock = self.difficultyArray[block_index]
+
+            if hash_operation[:len(difficultyAtBlock)] != difficultyAtBlock:
+                print(difficultyAtBlock)
+                print(self.difficultyArray[block_index])
                 return False, block_index
 
             # Move forward in the chain if everything checks out
@@ -113,15 +124,13 @@ class Blockchain:
 
     # Creates a transaction and returns the future next block number
     def addTransaction(self, sender, receiver, data):
-        self.transactions.append({
-            "sender": sender,
-            "receiver": receiver,
-            "document": data
-        })
+        self.transactions.append(
+            {"sender": sender, "receiver": receiver, "document": data}
+        )
 
         previous_block = self.getPreviousBlock()
 
-        return previous_block['blockNum'] + 1
+        return previous_block["blockNum"] + 1
 
     # Returns the address of a new node on the network
     def addNode(self, addressOfNode):
@@ -161,6 +170,13 @@ class Blockchain:
                     "timestamp": "Never",
                     "nonce": -1,
                     "previousHash": "FAKE BLOCK",
+                    "transactions": [
+                        {
+                            "sender": "You",
+                            "receiver": "Theif",
+                            "document": {"Your Bank Account": 123456789},
+                        }
+                    ],
                 }
             )
 
