@@ -7,8 +7,10 @@
 {% endblock %} {% block content %}
 <div class="message">
   <h1>{{ block['message'] }}</h1>
-  <p>Newest Block Number: <b>{{ block["blockNum"] }}</b></p>
-  <p>Time to mine: {{ time }} seconds</p>
+  <p><b>Newest Block Number:</b> {{ block["blockNum"] }}</p>
+  <p><b>Time to Mine:</b> {{ time }} seconds</p>
+  <p><b>Mining Diffculty:</b> {{ diff|length }} leading zeros</p>
+  <a href="/get_chain">See the chain</a>
 </div>
 <div class="blockchain-container">
   <div class="block mined-block">

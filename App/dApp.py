@@ -46,7 +46,7 @@ def mine_block():
 
     block["message"] = "Congrats, you mined a new Block!"
 
-    return render_template("mineblock.html", block=block, time=time), 200
+    return render_template("mineblock.html", block=block, time=time, diff=blockchain.difficulty), 200
 
 
 # Route to return the entire chain
