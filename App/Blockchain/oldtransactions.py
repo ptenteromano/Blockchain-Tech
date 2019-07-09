@@ -14,8 +14,7 @@ public_key = KDF.PBKDF2()
 
 private_key = ECC.import_key()
 
-# TODO: need to fix this class
-class transaction:
+class Transaction:
     def __init__(self):
         self.sender = ""
         self.receiver = ""
@@ -41,3 +40,4 @@ class transaction:
         cipher = PKCS1_OAEP.new(key)
         message = cipher.decrypt(ciphertext)
 
+print(private_key)
