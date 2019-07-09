@@ -12,7 +12,6 @@ from urllib.parse import urlparse
 import requests
 from timeit import default_timer as timer
 
-
 class Blockchain:
 
     # Initialize the chain and the genesis block
