@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# This file ENCRYPTS using AES - password necessary to decrypt
+
 # Remember to change permissions on these files
 # `chmod u+x ---.sh`
 
