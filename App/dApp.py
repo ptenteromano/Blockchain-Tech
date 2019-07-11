@@ -39,7 +39,8 @@ def mine_block():
 
     # Hash the contents of the prior block
     previous_hash = blockchain.hash(previous_block)
-    blockchain.addTransaction(sender=node_address, receiver="Phil", data="Dummy.pdf")
+    blockchain.addTransaction(
+        sender=node_address, receiver="Phil", data="Dummy.pdf")
 
     # Create the new block
     block = blockchain.createBlock(nonce, previous_hash, hash_solution)
@@ -98,6 +99,23 @@ def decrease_diff():
     return redirect("/")
 
 
+@app.route("/add_transaction", methods=["POST"])
+def add_transaction():
+    json = request.get_json()
+    transaction_keys = ["sender", "receiver", "data"]
+
+    if not all(key for key in transaction_keys):
+        return "Some elements of transaction are missing", 400
+
+    block_num = blockchain.addTransaction(
+        json["sender"], json["receiver"], json["data"])
+
+    response = {"message": f"This transaction added to block number {block_num}"}
+    return jsonify(response), 200
+
+    
+
+# ----------------
 # Context for entire app
 @app.context_processor
 def get_context():
