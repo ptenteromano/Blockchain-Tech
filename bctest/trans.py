@@ -1,5 +1,5 @@
 import hashlib
-
+import subprocess
 
 class Transaction:
     def __init__(self):
@@ -28,7 +28,7 @@ class Transaction:
         }
 
         cipherDoc = "cipherDoc.enc"
-        subprocess.check_call(["./encrypt.sh", plaintextPw, inputFile, cipherDoc])
+        subprocess.check_call(["./encrypt.sh", plaintextPw, document, cipherDoc])
 
         with open(cipherDoc, "r") as file:
             encData = file.read()
