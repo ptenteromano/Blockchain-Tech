@@ -2,8 +2,12 @@
 
 import os
 from Blockchain import Blockchain
-from flask import Flask, jsonify, request, render_template, url_for, redirect
+from flask import Flask, jsonify, request, \
+    render_template, url_for, redirect, flash
 from uuid import uuid4
+import urllib.request
+from werkzeug.utils import secure_filename
+
 
 app = Flask(__name__)
 
@@ -99,21 +103,65 @@ def decrease_diff():
     return redirect("/")
 
 
-@app.route("/add_transaction", methods=["POST"])
+@app.route("/add_transaction", methods=["GET", "POST"])
 def add_transaction():
-    json = request.get_json()
-    transaction_keys = ["sender", "receiver", "data"]
+    if request.method == "POST":
+        json = request.get_json()
+        transaction_keys = ["sender", "receiver", "data"]
 
-    if not all(key for key in transaction_keys):
-        return "Some elements of transaction are missing", 400
+        if not all(key for key in transaction_keys):
+            return "Some elements of transaction are missing", 400
 
-    block_num = blockchain.addTransaction(
-        json["sender"], json["receiver"], json["data"])
+        block_num = blockchain.addTransaction(
+            json["sender"], json["receiver"], json["data"])
 
-    response = {"message": f"This transaction added to block number {block_num}"}
-    return jsonify(response), 200
+        response = {
+            "message": f"This transaction added to block number {block_num}"}
+        return jsonify(response), 201
+    else:
+        return redirect("/"), 200
 
-    
+
+# ------------------
+# Upload Files section
+UPLOAD_FOLDER = os.path.dirname(os.path.realpath(__file__)) + "/files/"
+
+app.secret_key = "secret key"
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
+
+# Config of type of files allowed
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+@app.route("/upload_file", methods=["GET"])
+def upload_form():
+    return render_template("uploadform.html"), 200
+
+
+@app.route("/upload_successful", methods=["GET"])
+def upload_succ():
+    return render_template("uploadsuccess.html"), 200
+
+# Upload file function
+@app.route('/upload_file', methods=['POST'])
+def upload_file():
+    if request.method == 'POST':
+        # check if the post request has the files part
+        if 'files[]' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+        files = request.files.getlist('files[]')
+        for file in files:
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        flash('File(s) successfully uploaded')
+        return redirect('/upload_successful')
 
 # ----------------
 # Context for entire app

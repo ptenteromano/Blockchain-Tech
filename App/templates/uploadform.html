@@ -1,0 +1,32 @@
+{% extends "base.html" %} {% block content %}
+<div class="center-box">
+  <h1>SECuchain Multiple Files Upload Page</h1>
+
+  <h2>Select file(s) to upload</h2>
+  <p>
+    Welcome to SECuChain Upload page!
+  </p>
+
+  <div class="form-info">
+    <p>You can upload one or several files at a time.</p>
+    <p>Formats supported: <b>txt, pdf, png, jpg, jpeg, gif</b></p>
+    <p>Max file size is 16MB.</p>
+  </div>
+  <form method="post" action="/upload_file" enctype="multipart/form-data">
+    <dl>
+      <p>
+        <input
+          type="file"
+          name="files[]"
+          multiple="true"
+          autocomplete="off"
+          required
+        />
+      </p>
+    </dl>
+    <p>
+      <input type="submit" value="Submit" />
+    </p>
+  </form>
+</div>
+{% endblock %}
