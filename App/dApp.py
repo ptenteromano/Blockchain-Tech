@@ -14,8 +14,13 @@ app = Flask(__name__)
 # Init our blockchain
 blockchain = Blockchain()
 
+node_name = "JP Morgan"
 node_address = str(uuid4()).replace("-", "")
 
+nodes = [{"name": node_name, "address": node_address, "isSelf": True}]
+
+testAdd = {"name": "BOA", "address": 1234, "isSelf": False}
+nodes.append(testAdd)
 # Start our web-app
 # These are our routes, You can check out the FLASK documentation:
 # http://flask.pocoo.org/docs/1.0/patterns/fileuploads/
@@ -102,7 +107,8 @@ def decrease_diff():
     blockchain.changeDifficulty(increase=False)
     return redirect("/")
 
-
+# -----------
+# Transactions
 @app.route("/add_transaction", methods=["GET", "POST"])
 def add_transaction():
     if request.method == "POST":
@@ -120,6 +126,13 @@ def add_transaction():
         return jsonify(response), 201
     else:
         return redirect("/"), 200
+
+# ------------
+# Decentralization
+@app.route("/connect_node", methods=["POST"])
+def connect_node():
+    json = request.get_json()
+
 
 
 # ------------------
@@ -145,7 +158,10 @@ def upload_form():
 
 @app.route("/upload_successful", methods=["GET"])
 def upload_succ():
-    return render_template("uploadsuccess.html"), 200
+
+    otherNodes = [node for node in nodes if node["isSelf"] == False ]
+
+    return render_template("uploadsuccess.html",  nodes=otherNodes), 200
 
 # Upload file function
 @app.route('/upload_file', methods=['POST'])
