@@ -213,7 +213,7 @@ def upload_file():
 @app.context_processor
 def get_context():
     return dict(
-        url_for=dated_url_for, isvalid=blockchain.isChainValid, chain=blockchain.chain, user="Citi Bank", numNodes=blockchain.getNumNodes
+        url_for=dated_url_for, isvalid=blockchain.isChainValid, chain=blockchain.chain, user=node_name, numNodes=blockchain.getNumNodes
     )
 
 
