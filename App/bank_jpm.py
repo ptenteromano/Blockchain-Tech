@@ -159,7 +159,7 @@ def replace_chain():
 
 # ------------------
 # Upload Files section
-UPLOAD_FOLDER = os.path.dirname(os.path.realpath(__file__)) + "/files/"
+UPLOAD_FOLDER = os.path.dirname(os.path.realpath(__file__)) + "/files/jpm/"
 
 app.secret_key = "secret key"
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -181,7 +181,10 @@ def upload_form():
 @app.route("/upload_successful", methods=["GET"])
 def upload_succ():
 
-    otherNodes = [node for node in nodes if node["isSelf"] == False ]
+    otherNodes = [
+        {'name': "Citi", 'address': '0.0.0.0:5002'},
+        {'name': "BoA", 'address': '0.0.0.0:5003'}
+    ]
 
     return render_template("uploadsuccess.html",  nodes=otherNodes), 200
 

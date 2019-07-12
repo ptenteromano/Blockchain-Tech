@@ -68,6 +68,7 @@ def mine_block():
 def get_chain():
     return render_template("showchain.html")
 
+
 @app.route("/get_chain_json", methods=["GET"])
 def get_chain_json():
     response = {
@@ -162,7 +163,7 @@ def replace_chain():
 
 # ------------------
 # Upload Files section
-UPLOAD_FOLDER = os.path.dirname(os.path.realpath(__file__)) + "/files/"
+UPLOAD_FOLDER = os.path.dirname(os.path.realpath(__file__)) + "/files/citi/"
 
 app.secret_key = "secret key"
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -184,7 +185,10 @@ def upload_form():
 @app.route("/upload_successful", methods=["GET"])
 def upload_succ():
 
-    otherNodes = [node for node in nodes if node["isSelf"] == False]
+    otherNodes = [
+        {'name': "JPM", 'address': '0.0.0.0:5001'},
+        {'name': "BoA", 'address': '0.0.0.0:5003'}
+    ]
 
     return render_template("uploadsuccess.html",  nodes=otherNodes), 200
 
