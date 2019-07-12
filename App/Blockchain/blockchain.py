@@ -12,6 +12,7 @@ from urllib.parse import urlparse
 import requests
 from timeit import default_timer as timer
 
+
 class Blockchain:
 
     # Initialize the chain and the genesis block
@@ -54,7 +55,7 @@ class Blockchain:
         self.transactions = []
         self.chain.append(block)
         self.difficultyArray.append(self.difficulty)
-        
+
         return block
 
     # Returns the last block in the chain
@@ -105,7 +106,8 @@ class Blockchain:
             nonce = block["nonce"]
 
             hash_operation = hashlib.sha256(
-                str((nonce ** 2 - previous_nonce ** 2) + block_index).encode("utf-8")
+                str((nonce ** 2 - previous_nonce ** 2) +
+                    block_index).encode("utf-8")
             ).hexdigest()
 
             difficultyAtBlock = self.difficultyArray[block_index]
@@ -136,6 +138,9 @@ class Blockchain:
         parsed_url = urlparse(addressOfNode)
         self.nodes.add(parsed_url.netloc)
 
+    def getNumNodes(self):
+        return len(self.nodes)
+
     # Find the best chain-by-consensus on network (longest chain)
     def replaceChain(self):
         network = self.nodes
@@ -143,18 +148,25 @@ class Blockchain:
         max_length = len(self.chain)
 
         for node in network:
-            response = requests.get(f"http://{node}/get_chain")
+            try:
+                response = requests.get(f"http://{node}/get_chain_json")
 
-            if response.status_code == 200:
-                length = response.json()["length"]
-                chain = response.json()["chain"]
+                if response.status_code == 200:
+                    length = response.json()["length"]
+                    chain = response.json()["chain"]
+                    difficulties = list(response.json()["difficulties"])
+                    print(node, length, max_length)
 
-                if length > max_length and self.isChainValid(chain):
-                    max_length = length
-                    longest_chain = chain
+                    if length > max_length: # (self.isChainValid(chain)):
+                        print("yes!")
+                        max_length = length
+                        longest_chain = chain
+            except:
+                continue
 
         if longest_chain:
             self.chain = longest_chain
+            self.difficultyArray = difficulties
             return True
 
         return False

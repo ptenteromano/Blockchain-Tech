@@ -43,7 +43,13 @@
           <a href="/prune_fakes">Prune Chain</a>
         </div>
       </div>
+
       {% endif %}
+    </div>
+    <div class="center-box">
+      <p><b>User: </b>{{ user }}</p>
+      <p><b>Length of Chain: </b> {{ chain|length }}</p>
+      <p><b>Nodes Connected: </b>{{ numNodes() }}</p>
     </div>
 
     {% block content %} {% endblock %}

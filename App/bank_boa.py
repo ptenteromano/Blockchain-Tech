@@ -1,6 +1,6 @@
 # The web-application for our blockchain
 
-# # JP MORGAN
+# Citi bank
 import os
 from Blockchain import Blockchain
 from flask import Flask, jsonify, request, \
@@ -15,10 +15,12 @@ app = Flask(__name__)
 # Init our blockchain
 blockchain = Blockchain()
 
-node_name = "JP Morgan"
+node_name = "Bank of America"
 node_address = str(uuid4()).replace("-", "")
 
 nodes = [{"name": node_name, "address": node_address, "isSelf": True}]
+
+connectNodes = ["http://0.0.0.0:5001/", "http://0.0.0.0:5002/", "http://0.0.0.0:5003/"]
 
 testAdd = {"name": "BOA", "address": 1234, "isSelf": False}
 nodes.append(testAdd)
@@ -65,6 +67,13 @@ def mine_block():
 def get_chain():
     return render_template("showchain.html")
 
+@app.route("/get_chain_json", methods=["GET"])
+def get_chain_json():
+    response = {
+        'chain': blockchain.chain,
+        'length': len(blockchain.chain)
+    }
+    return jsonify(response), 200
 
 # Route to return if chain is valid or not
 @app.route("/is_valid", methods=["GET"])
@@ -130,11 +139,22 @@ def add_transaction():
 
 # ------------
 # Decentralization
-@app.route("/connect_node", methods=["POST"])
-def connect_node():
-    json = request.get_json()
+@app.route("/connect_nodes", methods=["GET"])
+def connect_nodes():
+    for node in connectNodes:
+        blockchain.addNode(node)
+    return redirect("/")
 
+@app.route("/replace_chain", methods=["GET"])
+def replace_chain():
+    is_chain_replaced = blockchain.replaceChain()
+    
+    if is_chain_replaced:
+        msg = "Chain has been replaced by another nodes"
+    else:
+        msg = "Your chain is the largest one!"
 
+    return render_template("/showchain.html", msg=msg)
 
 # ------------------
 # Upload Files section
@@ -185,7 +205,7 @@ def upload_file():
 @app.context_processor
 def get_context():
     return dict(
-        url_for=dated_url_for, isvalid=blockchain.isChainValid, chain=blockchain.chain
+        url_for=dated_url_for, isvalid=blockchain.isChainValid, chain=blockchain.chain, user="Citi Bank", numNodes=blockchain.getNumNodes
     )
 
 
@@ -201,5 +221,5 @@ def dated_url_for(endpoint, **values):
 # --------- No Other functions Below This Line --------
 # Run the app
 localHost = "0.0.0.0"
-port = 5001
+port = 5003
 app.run(host=localHost, port=port)
