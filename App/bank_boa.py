@@ -20,7 +20,8 @@ node_address = str(uuid4()).replace("-", "")
 
 nodes = [{"name": node_name, "address": node_address, "isSelf": True}]
 
-connectNodes = ["http://0.0.0.0:5001/", "http://0.0.0.0:5002/", "http://0.0.0.0:5003/"]
+connectNodes = ["http://0.0.0.0:5001/",
+                "http://0.0.0.0:5002/", "http://0.0.0.0:5003/"]
 
 testAdd = {"name": "BOA", "address": 1234, "isSelf": False}
 nodes.append(testAdd)
@@ -67,11 +68,13 @@ def mine_block():
 def get_chain():
     return render_template("showchain.html")
 
+
 @app.route("/get_chain_json", methods=["GET"])
 def get_chain_json():
     response = {
         'chain': blockchain.chain,
-        'length': len(blockchain.chain)
+        'length': len(blockchain.chain),
+        'difficulties': blockchain.difficultyArray
     }
     return jsonify(response), 200
 
@@ -145,10 +148,11 @@ def connect_nodes():
         blockchain.addNode(node)
     return redirect("/")
 
+
 @app.route("/replace_chain", methods=["GET"])
 def replace_chain():
     is_chain_replaced = blockchain.replaceChain()
-    
+
     if is_chain_replaced:
         msg = "Chain has been replaced by another nodes"
     else:
@@ -156,9 +160,10 @@ def replace_chain():
 
     return render_template("/showchain.html", msg=msg)
 
+
 # ------------------
 # Upload Files section
-UPLOAD_FOLDER = os.path.dirname(os.path.realpath(__file__)) + "/files/"
+UPLOAD_FOLDER = os.path.dirname(os.path.realpath(__file__)) + "/files/boa/"
 
 app.secret_key = "secret key"
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -180,7 +185,10 @@ def upload_form():
 @app.route("/upload_successful", methods=["GET"])
 def upload_succ():
 
-    otherNodes = [node for node in nodes if node["isSelf"] == False ]
+    otherNodes = [
+        {'name': "JPM", 'address': '0.0.0.0:5001'},
+        {'name': "Citi", 'address': '0.0.0.0:5002'}
+    ]
 
     return render_template("uploadsuccess.html",  nodes=otherNodes), 200
 
