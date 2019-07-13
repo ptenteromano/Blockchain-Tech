@@ -110,12 +110,13 @@ class Blockchain:
                     block_index).encode("utf-8")
             ).hexdigest()
 
-            difficultyAtBlock = self.difficultyArray[block_index]
-
-            if hash_operation[:len(difficultyAtBlock)] != difficultyAtBlock:
-                print(difficultyAtBlock)
-                print(self.difficultyArray[block_index])
-                return False, block_index
+            try:
+                difficultyAtBlock = self.difficultyArray[block_index]
+                if hash_operation[:len(difficultyAtBlock)] != difficultyAtBlock:
+                    return False, block_index
+            except:
+                print(len(self.difficultyArray), len(self.chain))
+                
 
             # Move forward in the chain if everything checks out
             previous_block = block
@@ -155,18 +156,19 @@ class Blockchain:
                     length = response.json()["length"]
                     chain = response.json()["chain"]
                     difficulties = list(response.json()["difficulties"])
-                    print(node, length, max_length)
+                    print(len(difficulties), difficulties)
 
-                    if length > max_length: # (self.isChainValid(chain)):
+                    if length > max_length:  # (self.isChainValid(chain)):
                         print("yes!")
                         max_length = length
                         longest_chain = chain
+                        chain_difficulties = difficulties
             except:
                 continue
 
         if longest_chain:
             self.chain = longest_chain
-            self.difficultyArray = difficulties
+            self.difficultyArray = chain_difficulties
             return True
 
         return False
