@@ -2,18 +2,22 @@
   box-sizing: border-box;
 }
 
-.center-box > * {
+.center-box, .center-box > * {
   text-align: center;
 }
 
 .menu {
+  border: 10px solid burlywood;
+  margin: 30px auto;
+  width: 80%;
+}
+
+.menu-row {
   display: flex;
   align-items: center;
   flex-direction: row;
   justify-content: space-evenly;
-  border: 10px solid burlywood;
-  margin: 30px auto;
-  width: 80%;
+  margin: 4px 0;
 }
 
 .basic-info {
@@ -89,3 +93,7 @@ button.dec-diff {
   background-color: #1df809;
   cursor: pointer;
 }
+
+/* .form-trans {
+  
+} */

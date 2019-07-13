@@ -9,8 +9,16 @@
 
 <strong>WIP</strong>
 
-### How to install
-1. Run `bash install.sh` to start
+### How to install (Mac)
+1. Ensure python3 is installed (try `which python3`)
+2. Run `./install.sh` 
+     - This changes the permissions on all necessary files
+     - This creates a virtual environment (venv) in python3
+     - Finally, it installs all necessary dependencies into this venv
+
+<p>Note: type `deactivate` to come out of the `venv`</p>
+<p>Note: to return to the `venv`, run the command `source venv/bin/activate`</P>
+
 
 ### Updated to do
 - Owner to block miner

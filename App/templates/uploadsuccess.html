@@ -1,0 +1,20 @@
+{% extends "base.html" %} {% block content %}
+<div class="center-box">
+  <h2>Successfully Uploaded!</h2>
+  <hr />
+
+  <h4>Choose a receiver to send your document to</h4>
+  <p>It's Private!</p>
+  <form method="post" action="/add_transaction" class="form-trans">
+    {% for node in nodes %} 
+    <input type="radio" name="receiver" value={{node["name"]}}>
+    {{ node["name"] }}<br />
+    {% endfor %}
+
+    <input type="submit" value={{node["name"]}}>
+  </form>
+
+  <!-- Change to submit -->
+  <a href="#">Start your transaction</a>
+</div>
+{% endblock %}
